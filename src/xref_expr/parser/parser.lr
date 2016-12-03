@@ -1,0 +1,179 @@
+    /* Copyright (C) 1989,1990 James A. Roskind, All rights reserved.********
+    This grammar was developed  and  written  by  James  A.  Roskind. 
+    Copying  of  this  grammar  description, as a whole, is permitted 
+    providing this notice is intact and applicable  in  all  complete 
+    copies.   Translations as a whole to other parser generator input 
+    languages  (or  grammar  description  languages)   is   permitted 
+    provided  that  this  notice is intact and applicable in all such 
+    copies,  along  with  a  disclaimer  that  the  contents  are   a 
+    translation.   The reproduction of derived text, such as modified 
+    versions of this grammar, or the output of parser generators,  is 
+    permitted,  provided  the  resulting  work includes the copyright 
+    notice "Portions Copyright (c)  1989,  1990  James  A.  Roskind". 
+    Derived products, such as compilers, translators, browsers, etc., 
+    that  use  this  grammar,  must also provide the notice "Portions 
+    Copyright  (c)  1989,  1990  James  A.  Roskind"  in   a   manner 
+    appropriate  to  the  utility,  and in keeping with copyright law 
+    (e.g.: EITHER displayed when first invoked/executed; OR displayed 
+    continuously on display terminal; OR via placement in the  object 
+    code  in  form  readable in a printout, with or near the title of 
+    the work, or at the end of the file).  No royalties, licenses  or 
+    commissions  of  any  kind are required to copy this grammar, its 
+    translations, or derivative products, when the copies are made in 
+    compliance with this notice. Persons or corporations that do make 
+    copies in compliance with this notice may charge  whatever  price 
+    is  agreeable  to  a  buyer, for such copies or derivative works. 
+    THIS GRAMMAR IS PROVIDED ``AS IS'' AND  WITHOUT  ANY  EXPRESS  OR 
+    IMPLIED  WARRANTIES,  INCLUDING,  WITHOUT LIMITATION, THE IMPLIED 
+    WARRANTIES  OF  MERCHANTABILITY  AND  FITNESS  FOR  A  PARTICULAR 
+    PURPOSE.
+
+    James A. Roskind
+    Independent Consultant
+    516 Latania Palm Drive
+    Indialantic FL, 32903
+    (407)729-4348
+    jar@ileaf.com
+    or ...!uunet!leafusa!jar
+
+
+    ---end of copyright notice---
+
+
+This file is a companion file to a C++ grammar description file.
+
+*/
+
+language java {
+package xref_expr.parser;
+
+import lr_runtime.*;
+
+import java.util.*;
+
+import xref_expr.scanner.*;
+import xref_expr.parser.tree.*;
+
+type AnnotatedValue AnnotatedValue;
+type Expression Expression;
+type BinaryExpr BinaryExpr;
+type VarExpr VarExpr;
+}
+
+terminal AnnotatedValue ASTERISK;
+terminal AnnotatedValue LOGICAL_AND;
+terminal AnnotatedValue MINUS;
+terminal AnnotatedValue LOGICAL_NOT;
+terminal AnnotatedValue LOGICAL_OR;
+terminal AnnotatedValue OPEN_P;
+terminal AnnotatedValue CLOSE_P;
+terminal AnnotatedValue QUESTION_MARK;
+terminal AnnotatedValue COLON;
+terminal AnnotatedValue COMMA;
+terminal AnnotatedValue SLASH;
+terminal AnnotatedValue MOD;
+terminal AnnotatedValue SHIFT_LEFT;
+terminal AnnotatedValue SHIFT_RIGHT;
+terminal AnnotatedValue LESS_THAN;
+terminal AnnotatedValue GREATER_THAN;
+terminal AnnotatedValue LESS_OR_EQUAL;
+terminal AnnotatedValue GREATER_OR_EQUAL;
+terminal AnnotatedValue EQUALS;
+terminal AnnotatedValue NOT_EQUALS;
+terminal AnnotatedValue BITWISE_XOR;
+terminal AnnotatedValue BITWISE_OR;
+terminal AnnotatedValue BITWISE_AND;
+terminal AnnotatedValue BITWISE_NOT;
+terminal AnnotatedValue PLUS;
+terminal AnnotatedValue VARARGS;
+terminal AnnotatedValue SEMICOLON;
+terminal AnnotatedValue OPEN_S;
+terminal AnnotatedValue CLOSE_S;
+terminal AnnotatedValue OPEN_B;
+terminal AnnotatedValue CLOSE_B;
+terminal AnnotatedValue ASSIGN;
+terminal AnnotatedValue MULT_ASSIGN;
+terminal AnnotatedValue DIV_ASSIGN;
+terminal AnnotatedValue MOD_ASSIGN;
+terminal AnnotatedValue PLUS_ASSIGN;
+terminal AnnotatedValue INCREMENT;
+terminal AnnotatedValue SUB_ASSIGN;
+terminal AnnotatedValue DECREMENT;
+terminal AnnotatedValue POINTS_TO;
+terminal AnnotatedValue AND_ASSIGN;
+terminal AnnotatedValue XOR_ASSIGN;
+terminal AnnotatedValue OR_ASSIGN;
+terminal AnnotatedValue DOT;
+terminal AnnotatedValue LSHIFT_ASSIGN;
+terminal AnnotatedValue RSHIFT_ASSIGN;
+terminal AnnotatedValue TYPE_NAME;
+
+/* For pre-preprocessor; parser should never see these tokens. */
+terminal STRINGIZE, TOKEN_PASTE;
+
+/* Keywords: */
+terminal AnnotatedValue ASM;
+terminal AnnotatedValue AUTO;
+terminal AnnotatedValue BREAK;
+terminal AnnotatedValue CASE;
+terminal AnnotatedValue CHAR;
+terminal AnnotatedValue CONST;
+terminal AnnotatedValue CONTINUE;
+terminal AnnotatedValue DEFAULT;
+terminal AnnotatedValue DO;
+terminal AnnotatedValue DOUBLE;
+terminal AnnotatedValue ELSE;
+terminal AnnotatedValue ENUM;
+terminal AnnotatedValue EXTERN;
+terminal AnnotatedValue FLOAT;
+terminal AnnotatedValue FOR;
+terminal AnnotatedValue GOTO;
+terminal AnnotatedValue IF;
+terminal AnnotatedValue INLINE;
+terminal AnnotatedValue INT;
+terminal AnnotatedValue LONG;
+terminal AnnotatedValue REGISTER;
+terminal AnnotatedValue RESTRICT;
+terminal AnnotatedValue RETURN;
+terminal AnnotatedValue SHORT;
+terminal AnnotatedValue SIGNED;
+terminal AnnotatedValue SIZEOF;
+terminal AnnotatedValue STATIC;
+terminal AnnotatedValue STRUCT;
+terminal AnnotatedValue SWITCH;
+terminal AnnotatedValue TYPEDEF;
+terminal AnnotatedValue UNION;
+terminal AnnotatedValue UNSIGNED;
+terminal AnnotatedValue VOID;
+terminal AnnotatedValue VOLATILE;
+terminal AnnotatedValue WHILE;
+
+terminal AnnotatedValue BOOL;
+terminal AnnotatedValue COMPLEX;
+terminal AnnotatedValue IMAGINARY;
+
+terminal AnnotatedValue IDENTIFIER;
+terminal AnnotatedValue INT_CONSTANT;
+terminal AnnotatedValue FLOAT_CONSTANT;
+terminal AnnotatedValue CHAR_CONSTANT;
+terminal AnnotatedValue STRING;
+
+non terminal Expression expr;
+non terminal Expression add_expr;
+non terminal Expression var_expr;
+
+start with expr;
+
+expr ::=
+      add_expr                          : Expression
+    ;
+
+add_expr ::=
+      add_expr PLUS var_expr            : AddExpression
+    | var_expr                          : AddExpression
+    ;
+
+var_expr ::=
+      IDENTIFIER                        : VarExpression
+    ;
+
