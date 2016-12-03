@@ -22,15 +22,17 @@ import lr_runtime.*;
 
 %{
     private long serial = 0;
+    private boolean returnedEnd = false;
 
     private final StringBuilder string = new StringBuilder();
-    private final StringBuilder macroName = new StringBuilder();
+    private final StringBuilder annotations = new StringBuilder();
     
-    private Token symbol(int type, String value) {
-        Token t = new Symbol(type, yyline, yycolumn, value, serial);
+    private Symbol symbol(int type, String value) {
+        Symbol t = new Symbol(type, yyline, yycolumn, value, annotations.toString(), serial);
+        annotations.delete(0, annotations.length());
         serial++;
 
-        if(t == null) throw new NullPointerException();
+        System.err.println(t);
 
         return t;
     }
@@ -110,7 +112,7 @@ Whitespace          = [ \t\n]|{Comment}
 "<<="       { return symbol(Sym.LSHIFT_ASSIGN, yytext()); }
 ">>="       { return symbol(Sym.RSHIFT_ASSIGN, yytext()); }
 
-L?\"      { string.setLength(0);  yybegin(STRING);  }
+L?\"      { string.setLength(0);  annotations.append(yytext());  yybegin(STRING); annotations.append(yytext());  }
 
 [1-9][0-9]*([uU]|[lL])*                       { return symbol(Sym.INT_CONSTANT, yytext()); }
 0[xX][0-9a-fA-F]+([uU]|[lL])*                 { return symbol(Sym.INT_CONSTANT, yytext()); }
@@ -118,10 +120,10 @@ L?\"      { string.setLength(0);  yybegin(STRING);  }
 [0-9]+\\.[0-9]*([eE][-+]?[0-9]+)?             { return symbol(Sym.FLOAT_CONSTANT, yytext()); }
 [0-9]*\\.[0-9]+([eE][-+]?[0-9]+)?             { return symbol(Sym.FLOAT_CONSTANT, yytext()); }
 [0-9]+[eE][-+]?[0-9]+                         { return symbol(Sym.FLOAT_CONSTANT, yytext()); }
-L?\'                                          { string.setLength(0); yybegin(CHAR); }
+L?\'                                          { string.setLength(0); annotations.append(yytext()); yybegin(CHAR); }
 
 
-{Whitespace}+                        { } //ignore whitespace
+{Whitespace}+                        { annotations.append(yytext()); } //ignore whitespace
 
 "asm"       { return symbol(Sym.ASM, yytext()); }
 "auto"      { return symbol(Sym.AUTO, yytext()); }
@@ -166,14 +168,23 @@ L?\'                                          { string.setLength(0); yybegin(CHA
 
 {Identifier}    { return symbol(Sym.IDENTIFIER, yytext()); }
 
-<<EOF>>                         { return symbol(Sym.PARSER_EOF, null);  }
-[^]           { throw new ScannerException("Can't match " + yytext() + " in " + stateNames.get(zzLexicalState)); }
+<<EOF>>         {
+                    if (!returnedEnd) {
+                        returnedEnd = true;
+                        return symbol(Sym.END_OF_FILE, null);
+                    }
+                    assert (annotations.length() == 0);
+                    return symbol(Sym.PARSER_EOF, null);
+                }
+[^]           { throw new Error("Can't match " + yytext() + " in " + stateNames.get(zzLexicalState)); }
 
 <STRING> {
     "\\\""                          {   string.append( yytext() );  }
     "\""                            { 
                                         
-                                        return symbol(Sym.STRING, string.toString()); 
+                                        Symbol s = symbol(Sym.STRING, string.toString());
+                                        annotations.append(yytext());
+                                        return s;
                                     }
     [^\"\n\\]+                      {   string.append( yytext() );  }
     "\\"                            {   string.append( yytext() );  }
@@ -183,13 +194,10 @@ L?\'                                          { string.setLength(0); yybegin(CHA
     \\\'                            {   string.append( yytext() );  }
     "\'"                            { 
                                         
-                                        return symbol(Sym.CHAR_CONSTANT, string.toString()); 
+                                        Symbol s = symbol(Sym.CHAR_CONSTANT, string.toString());
+                                        annotations.append(yytext());
+                                        return s;
                                     }
     [^\'\n\\]+                      {   string.append( yytext() );  }
     "\\"                            {   string.append( yytext() );  }
 }
-
-
-<<EOF>>   { throw new ScannerException("Unexpected EOF in state " + stateNames.get(zzLexicalState)); }
-
-[^]           { throw new ScannerException("Can't match " + yytext() + " in " + stateNames.get(zzLexicalState)); }

@@ -20,6 +20,6 @@ public class VarExpr extends Expression {
 
     @Override
     public String toString() {
-        return var.value;
+        return var.ann + var.value;
     }
 }

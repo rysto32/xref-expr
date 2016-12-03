@@ -20,8 +20,12 @@ import static xref_expr.parser.Sym.*;
  */
 public class Symbol extends lr_runtime.Token {
     
+    public Symbol(int id, int l, int r, String s, String ann, long ser) {
+        super(id, new AnnotatedValue(s, ann, id, ser), l, r);
+    }
+
     public Symbol(int id, int l, int r, String s, long ser) {
-        super(id, new AnnotatedValue(s, id, ser), l, r);
+        this(id, l, r, s, "", ser);
     }
     
     public Symbol(int id, int l, int r, long ser) {
@@ -44,13 +48,13 @@ public class Symbol extends lr_runtime.Token {
         }
     }
     
-    public Symbol makeCopy(int symbol) {
+    /*public Symbol makeCopy(int symbol) {
         return new Symbol(symbol, new AnnotatedValue(getValue().value, sym, getValue().serial), line, column);
     }
     
     public Symbol makeCopy() {
         return makeCopy(sym);
-    }
+    }*/
     
     public static String toString(int sym, String value) {
         switch(sym) {            
@@ -170,6 +174,9 @@ public class Symbol extends lr_runtime.Token {
                 
             case TOKEN_PASTE:
                 return "##";
+
+            case END_OF_FILE:
+                return ("END_OF_FILE");
              
             default:
                 throw new Error("Unknown symbol type " + sym);

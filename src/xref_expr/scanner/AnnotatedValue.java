@@ -11,20 +11,20 @@ package xref_expr.scanner;
 
 public class AnnotatedValue {
     public final String value;
-    public final Annotations ann;
+    public final String ann;
     public final int symbol;
     public final long serial;
     
-    public AnnotatedValue(String v, int s, long ser) {
+    public AnnotatedValue(String v, String a, int s, long ser) {
         value = v;
-        ann = new Annotations();
+        ann = a;
         symbol = s;
         serial = ser;
     }
     
     public AnnotatedValue(int s, long ser) {
         value = null;
-        ann = new Annotations();
+        ann = "";
         symbol = s;
         serial = ser;
     }

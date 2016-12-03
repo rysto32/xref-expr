@@ -24,6 +24,6 @@ public class BinaryExpr extends Expression {
 
     @Override
     public String toString() {
-        return left + op_ann.value + right;
+        return left + op_ann.ann + op_ann.value + right;
     }
 }

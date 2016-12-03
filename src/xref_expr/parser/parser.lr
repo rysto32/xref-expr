@@ -158,6 +158,8 @@ terminal AnnotatedValue FLOAT_CONSTANT;
 terminal AnnotatedValue CHAR_CONSTANT;
 terminal AnnotatedValue STRING;
 
+terminal AnnotatedValue END_OF_FILE;
+
 non terminal Expression expr;
 non terminal Expression add_expr;
 non terminal Expression var_expr;
@@ -165,7 +167,7 @@ non terminal Expression var_expr;
 start with expr;
 
 expr ::=
-      add_expr                          : Expression
+      add_expr END_OF_FILE              : Expression
     ;
 
 add_expr ::=
