@@ -9,7 +9,7 @@ package xref_expr.parser;
  *
  * @author rstone
  */
-public class CompileError extends Exception {
+public class CompileError extends Error {
 
     /**
      * Creates a new instance of <code>CompileError</code> without detail
