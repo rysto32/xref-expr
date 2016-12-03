@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import lr_runtime.TokenFactory;
-import xref_expr.parser.XrefParser;
+import xref_expr.parser.ExprParser;
 import xref_expr.parser.tree.Expression;
 import xref_expr.scanner.Lexer;
 import xref_expr.scanner.SymbolFactory;
@@ -32,7 +32,7 @@ public class Main {
      */
     public static void main(String[] args) {
         try {
-            XrefParser p = new XrefParser();
+            ExprParser p = new ExprParser();
             Lexer lex = buildLexer(new File("test.in"));
             TokenFactory factory = new SymbolFactory();
             

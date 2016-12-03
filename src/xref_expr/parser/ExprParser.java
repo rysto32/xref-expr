@@ -11,6 +11,7 @@ import java.util.NavigableSet;
 import lr_runtime.Token;
 import xref_expr.parser.tree.Expression;
 import xref_expr.parser.tree.BinaryExpr;
+import xref_expr.parser.tree.FullExpression;
 import xref_expr.parser.tree.VarExpr;
 import xref_expr.scanner.AnnotatedValue;
 
@@ -18,11 +19,11 @@ import xref_expr.scanner.AnnotatedValue;
  *
  * @author rstone
  */
-public class XrefParser extends Parser {
+public class ExprParser extends Parser {
 
     @Override
-    protected Expression Expression(int line, int col, Expression arg0) {
-        return arg0;
+    protected Expression Expression(int line, int col, Expression arg0, Token<AnnotatedValue> arg1) {
+        return new FullExpression(arg0, arg1.value);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class XrefParser extends Parser {
     @Override
     public void suggestRepair(List<Token> list, NavigableSet<Integer> changes) {
         System.err.print("  Did you mean:\n  ");
-        List<Integer> tokenWidth = new ArrayList<Integer>(list.size());
+        List<Integer> tokenWidth = new ArrayList<>(list.size());
         int start = changes.first();
         for(Token t : list.subList(Math.max(start - 3, 0), list.size())) {
             String s = t.toString();
@@ -85,5 +86,6 @@ public class XrefParser extends Parser {
     public void reportGiveUp(Token t) {
         System.err.println("Error @ line " + t.getLine() + " column " + t.getColumn() + ": " +
                 "Too many parse errors; bailing out");
+        throw new CompileError();
     }
 }
