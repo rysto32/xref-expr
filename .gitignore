@@ -1,0 +1,7 @@
+build/
+dist/
+nbproject/private/
+src/xref_expr/parser/Parser.java
+src/xref_expr/parser/Sym.java
+src/xref_expr/scanner/Lexer.java
+
